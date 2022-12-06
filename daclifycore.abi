@@ -294,6 +294,10 @@
                     "type": "name"
                 },
                 {
+                    "name": "proton_kyc_enabled",
+                    "type": "bool"
+                },
+                {
                     "name": "r1",
                     "type": "bool"
                 },
@@ -688,6 +692,11 @@
             ]
         },
         {
+            "name": "repairconf",
+            "base": "",
+            "fields": []
+        },
+        {
             "name": "setuiframe",
             "base": "",
             "fields": [
@@ -981,6 +990,11 @@
         {
             "name": "removecust",
             "type": "removecust",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "repairconf",
+            "type": "repairconf",
             "ricardian_contract": ""
         },
         {

@@ -28,6 +28,16 @@ ACTION daclifycore::updateconf(groupconf new_conf, bool remove){
 }
 
 
+ACTION daclifycore::repairconf(){
+    require_auth(get_self());
+
+    coreconf_table _coreconf(get_self(), get_self().value);
+    
+    auto conf = coreconf();
+    
+    _coreconf.set(conf, get_self());
+}
+
 
 /**
  * propose action allows a custodian to propose a group action
@@ -291,6 +301,9 @@ ACTION daclifycore::exec(name executer, uint64_t id) {
  * @pre requires the authority of the core contract
  * 
  * @param account The account to invite as a custodian.
+ * 
+ * Example cleos command:
+ * cleos push action <core_contract> updateconf '{"new_conf": { "max_custodians": 0, "inactivate_cust_after_sec": 2592000, "exec_on_threshold_zero": 0, "proposal_archive_size": 3, "member_registration": 1, "userterms": 0, "profile_provider": "", "withdrawals": 1, "internal_transfers": 1, "deposits": 1, "maintainer_account": { "actor": "fdachub", "permission": "active" }, "hub_account": "fdachub", "proton_kyc_enabled": 1, "r1": 0, "r2": 0, "r3": 0 }, "remove": 0}' -p myfreedacdao
  */
 ACTION daclifycore::invitecust(name account){
   require_auth(get_self() );
@@ -300,6 +313,8 @@ ACTION daclifycore::invitecust(name account){
   check(!has_module(name("elections")), "Can't invite a custodian when election module is linked.");
   
   auto conf = get_group_conf();
+
+  if (conf.proton_kyc_enabled == true) check(is_proton_kyced(account), "Invitee must have completed Proton KYC");
 
   check(is_account_voice_wrapper(account), "Account does not exist or doesn't meet requirements.");
 

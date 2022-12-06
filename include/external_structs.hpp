@@ -16,6 +16,32 @@
       eosio::indexed_by<"byhook"_n, eosio::const_mem_fun<actionhooks, uint128_t, &actionhooks::by_hook>>
     > actionhooks_table;
 
+  
+  struct kyc_prov {
+    eosio::name kyc_provider;
+    std::string kyc_level;
+    uint64_t kyc_date;
+  };
+  
+  struct[[ eosio::table("usersinfo"), eosio::contract("eosio.proton") ]] userinfo {
+    eosio::name acc;
+    std::string name;
+    std::string avatar;
+    bool verified;
+    uint64_t date;
+    uint64_t verifiedon;
+    eosio::name verifier;
+
+    std::vector<eosio::name> raccs;
+    std::vector<std::tuple<eosio::name, eosio::name>> aacts;
+    std::vector<std::tuple<eosio::name, std::string>> ac;
+
+    std::vector<kyc_prov> kyc;
+
+    uint64_t primary_key() const { return acc.value; }
+};
+typedef eosio::multi_index<"usersinfo"_n, userinfo> usersinfo;
+
 
 
 

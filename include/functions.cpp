@@ -562,6 +562,40 @@ void daclifycore::archive_proposal(const name& archive_type, proposals_table& id
 }
 
 
+bool daclifycore::is_proton_kyced(const name& account) {
+  // default result
+  bool kyc_status {false};
+
+  // first determine which contract we consult - if we have set an alternative
+  // contract then use that one
+#ifdef PRODUCTION
+  name verification_contract = name("eosio.proton");
+#else
+  name verification_contract = name("freeosconfig");
+#endif
+
+  // access the verification table
+  usersinfo verification_table(verification_contract, verification_contract.value);
+  auto verification_iterator = verification_table.find(account.value);
+
+  if (verification_iterator != verification_table.end()) {
+    
+    auto kyc_prov = verification_iterator->kyc;
+
+    for (int i = 0; i < kyc_prov.size(); i++) {
+      size_t fn_pos = kyc_prov[i].kyc_level.find("firstname");
+      size_t ln_pos = kyc_prov[i].kyc_level.find("lastname");
+
+      if (fn_pos != std::string::npos && ln_pos != std::string::npos) {
+        kyc_status = true;
+        break;
+      }
+    }
+  }
+
+  return kyc_status;
+}
+
 
 
 

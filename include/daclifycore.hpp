@@ -72,6 +72,7 @@ CONTRACT daclifycore : public contract {
       bool deposits = false;
       permission_level maintainer_account = permission_level(name("daclifyhub11"), name("active") );//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       name hub_account = name("daclifyhub11");
+      bool proton_kyc_enabled = false;
       
       bool r1;
       bool r2;
@@ -119,6 +120,7 @@ CONTRACT daclifycore : public contract {
     ACTION delprofile(name actor);
 
     ACTION updateconf(groupconf new_conf, bool remove);
+    ACTION repairconf();
 
     ACTION fileupload(name uploader, name file_scope, string content);
     ACTION filepublish(name file_scope, string title, checksum256 trx_id, uint32_t block_num);
@@ -333,6 +335,7 @@ CONTRACT daclifycore : public contract {
     bool is_member(const name& accountname);
     bool member_has_balance(const name& accountname);
     void update_member_count(int delta);
+    bool is_proton_kyced(const name& account);
 
     bool is_master_authorized_to_use_slave(const permission_level& master, const permission_level& slave){
       vector<permission_level> masterperm = { master };
