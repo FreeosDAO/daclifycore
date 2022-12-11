@@ -1,3 +1,12 @@
+  // contracts required for integration with Proton and Freeos
+#ifdef PRODUCTION
+  name kyc_verification_contract = name("eosio.proton");
+  name freeos_participants_contract = name("freeosclaim");
+#else
+  name kyc_verification_contract = name("alphaconfig");
+  name freeos_participants_contract = name("alphaclaim");
+#endif
+
 /**
  * Returns the configuration (groupconf struct) from the coreconf table
  * 
@@ -561,21 +570,24 @@ void daclifycore::archive_proposal(const name& archive_type, proposals_table& id
 
 }
 
+bool daclifycore::is_freeos_participant(const name& account) {
+  bool freeos_status = false;
+
+  // access the participants table
+  participants_index participants_table(freeos_participants_contract, account.value);
+  auto participant_iterator = participants_table.begin();
+
+  if (participant_iterator != participants_table.end()) freeos_status = true;
+
+  return freeos_status;  
+}
 
 bool daclifycore::is_proton_kyced(const name& account) {
   // default result
   bool kyc_status {false};
 
-  // first determine which contract we consult - if we have set an alternative
-  // contract then use that one
-#ifdef PRODUCTION
-  name verification_contract = name("eosio.proton");
-#else
-  name verification_contract = name("freeosconfig");
-#endif
-
   // access the verification table
-  usersinfo verification_table(verification_contract, verification_contract.value);
+  usersinfo verification_table(kyc_verification_contract, kyc_verification_contract.value);
   auto verification_iterator = verification_table.find(account.value);
 
   if (verification_iterator != verification_table.end()) {

@@ -10,6 +10,10 @@
  * @param remove If true, the configuration will be removed.
  * 
  * @return The action is returning nothing.
+ * 
+ * Example cleos command:
+ * cleos push action <core_contract> updateconf '{"new_conf": { "max_custodians": 0, "inactivate_cust_after_sec": 2592000, "exec_on_threshold_zero": 0, "proposal_archive_size": 3, "member_registration": 1, "userterms": 0, "profile_provider": "", "withdrawals": 1, "internal_transfers": 1, "deposits": 1, "maintainer_account": { "actor": "fdachub", "permission": "active" }, "hub_account": "fdachub", "proton_kyc_enabled": 1, "freeos_participation_enabled": 1, "r1": 0, "r2": 0, "r3": 0 }, "remove": 0}' -p myfreedacdao
+ *
  */
 ACTION daclifycore::updateconf(groupconf new_conf, bool remove){
     require_auth(get_self());
@@ -302,8 +306,6 @@ ACTION daclifycore::exec(name executer, uint64_t id) {
  * 
  * @param account The account to invite as a custodian.
  * 
- * Example cleos command:
- * cleos push action <core_contract> updateconf '{"new_conf": { "max_custodians": 0, "inactivate_cust_after_sec": 2592000, "exec_on_threshold_zero": 0, "proposal_archive_size": 3, "member_registration": 1, "userterms": 0, "profile_provider": "", "withdrawals": 1, "internal_transfers": 1, "deposits": 1, "maintainer_account": { "actor": "fdachub", "permission": "active" }, "hub_account": "fdachub", "proton_kyc_enabled": 1, "r1": 0, "r2": 0, "r3": 0 }, "remove": 0}' -p myfreedacdao
  */
 ACTION daclifycore::invitecust(name account){
   require_auth(get_self() );
@@ -315,6 +317,7 @@ ACTION daclifycore::invitecust(name account){
   auto conf = get_group_conf();
 
   if (conf.proton_kyc_enabled == true) check(is_proton_kyced(account), "Invitee must have completed Proton KYC");
+  if (conf.freeos_participation_enabled == true) check(is_freeos_participant(account), "Invitee must be a Freeos participant");
 
   check(is_account_voice_wrapper(account), "Account does not exist or doesn't meet requirements.");
 

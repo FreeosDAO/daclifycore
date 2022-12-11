@@ -298,6 +298,10 @@
                     "type": "bool"
                 },
                 {
+                    "name": "freeos_participation_enabled",
+                    "type": "bool"
+                },
+                {
                     "name": "r1",
                     "type": "bool"
                 },

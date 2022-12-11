@@ -42,6 +42,20 @@
 };
 typedef eosio::multi_index<"usersinfo"_n, userinfo> usersinfo;
 
+struct[[ eosio::table("participants"), eosio::contract("freeosgov") ]] participant {
+  std::string account_type;            // user's verification level
+  uint32_t registered_iteration;  // when the user was registered
+  uint32_t issuances;             // total number of times the user has been issued with POINTs
+  eosio::asset total_issuance_amount;    // accrued POINTs
+  uint32_t last_claim;            // the last iteration in which the user attempted to claim
+  uint32_t surveys;               // how many surveys the user has completed
+  uint32_t votes;                 // how many votes the user has completed
+  uint32_t ratifys;               // how many ratifys the user has completed  
+
+  uint64_t primary_key() const { return 0; } // return a constant to ensure a single-row table
+};
+using participants_index = eosio::multi_index<"participants"_n, participant>;
+
 
 
 

@@ -73,6 +73,7 @@ CONTRACT daclifycore : public contract {
       permission_level maintainer_account = permission_level(name("daclifyhub11"), name("active") );//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       name hub_account = name("daclifyhub11");
       bool proton_kyc_enabled = false;
+      bool freeos_participation_enabled = false;
       
       bool r1;
       bool r2;
@@ -336,6 +337,7 @@ CONTRACT daclifycore : public contract {
     bool member_has_balance(const name& accountname);
     void update_member_count(int delta);
     bool is_proton_kyced(const name& account);
+    bool is_freeos_participant(const name& account);
 
     bool is_master_authorized_to_use_slave(const permission_level& master, const permission_level& slave){
       vector<permission_level> masterperm = { master };
