@@ -23,10 +23,24 @@ ACTION daclifycore::updateconf(groupconf new_conf, bool remove){
       _coreconf.remove();
       return;
     }
+
     auto conf = _coreconf.get_or_default(coreconf());
     if(conf.conf.maintainer_account.actor != new_conf.maintainer_account.actor || conf.conf.maintainer_account.permission != new_conf.maintainer_account.permission){
       update_owner_maintainance(new_conf.maintainer_account);
     }
+
+    // check whether enabling freeos participation feature is valid for existing custodians
+    // throws assert error if any custodian is not a Freeos participant
+    if (conf.conf.freeos_participation_enabled == false && new_conf.freeos_participation_enabled == true) {
+      check(check_custodians_freeos(), "Not all of the custodians meet the Freeos participation requirement");
+    }
+
+    // check whether enabling proton_kyc feature is valid for existing custodians
+    // throws assert error if any custodian has not completed proton kyc
+    if (conf.conf.proton_kyc_enabled == false && new_conf.proton_kyc_enabled == true) {
+      check(check_custodians_kyc(), "Not all of the custodians meet the Proton KYC requirement");
+    }
+
     conf.conf = new_conf;
     _coreconf.set(conf, get_self());
 }
@@ -284,7 +298,7 @@ ACTION daclifycore::exec(name executer, uint64_t id) {
   check(total_approved_weight >= highest_action_threshold, "Not enough vote weight for execution.");
 
   //exec
-  for(action act : prop_itr->actions) { 
+  for(action act : prop_itr->actions) {
       act.send();
   }
 
@@ -959,6 +973,7 @@ ACTION daclifycore::filedelete(name file_scope, uint64_t id){
 }
 
 
+
 /**
  * asset-transfer notification handler
  * 
@@ -1032,6 +1047,15 @@ ACTION daclifycore::clearbals(name scope){
   while(itr != _balances.end() ) {
       itr = _balances.erase(itr);
   }
+}
+
+/**
+ * version action displays the contract version number
+ */
+ACTION daclifycore::version() {
+  std::string version_message = "version: " + VERSION;
+
+  check(false, version_message);
 }
 
 

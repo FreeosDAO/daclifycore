@@ -1,12 +1,3 @@
-  // contracts required for integration with Proton and Freeos
-#ifdef PRODUCTION
-  name kyc_verification_contract = name("eosio.proton");
-  name freeos_participants_contract = name("freeosclaim");
-#else
-  name kyc_verification_contract = name("alphaconfig");
-  name freeos_participants_contract = name("alphaclaim");
-#endif
-
 /**
  * Returns the configuration (groupconf struct) from the coreconf table
  * 
@@ -607,6 +598,32 @@ bool daclifycore::is_proton_kyced(const name& account) {
 
   return kyc_status;
 }
+
+bool daclifycore::check_custodians_kyc() {
+
+  custodians_table _custodians(get_self(), get_self().value);
+  auto cust_itr = _custodians.begin();
+  while (cust_itr != _custodians.end() ){
+    if (is_proton_kyced(cust_itr->account) == false) return false;    
+    cust_itr++;
+  }
+
+  return true;
+}
+
+bool daclifycore::check_custodians_freeos() {
+
+  custodians_table _custodians(get_self(), get_self().value);
+  auto cust_itr = _custodians.begin();
+  while (cust_itr != _custodians.end() ){
+    if (is_freeos_participant(cust_itr->account) == false) return false;    
+    cust_itr++;
+  }
+
+  return true;
+}
+
+
 
 
 

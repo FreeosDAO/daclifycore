@@ -12,6 +12,17 @@
 using namespace std;
 using namespace eosio;
 
+  // contracts required for integration with Proton and Freeos
+#ifdef PRODUCTION
+  name kyc_verification_contract = name("eosio.proton");
+  name freeos_participants_contract = name("freeosclaim");
+#else
+  name kyc_verification_contract = name("alphaconfig");
+  name freeos_participants_contract = name("alphaclaim");
+#endif
+
+const std::string VERSION = "0.1.2";
+
 CONTRACT daclifycore : public contract {
   public:
     using contract::contract;
@@ -129,11 +140,11 @@ CONTRACT daclifycore : public contract {
 
     //dev
     ACTION clearbals(name scope);
-
+    ACTION version();
+    
     //notification handlers
     [[eosio::on_notify("*::transfer")]]
     void on_transfer(name from, name to, asset quantity, string memo);
-
 
   private:
   
@@ -336,8 +347,12 @@ CONTRACT daclifycore : public contract {
     bool is_member(const name& accountname);
     bool member_has_balance(const name& accountname);
     void update_member_count(int delta);
+
+    //identity
     bool is_proton_kyced(const name& account);
     bool is_freeos_participant(const name& account);
+    bool check_custodians_kyc();
+    bool check_custodians_freeos();
 
     bool is_master_authorized_to_use_slave(const permission_level& master, const permission_level& slave){
       vector<permission_level> masterperm = { master };
