@@ -40,6 +40,24 @@
             ]
         },
         {
+            "name": "arole",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint16"
+                },
+                {
+                    "name": "role",
+                    "type": "name"
+                },
+                {
+                    "name": "user",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "avatars",
             "base": "",
             "fields": [
@@ -733,6 +751,20 @@
             ]
         },
         {
+            "name": "testhasrole",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "role",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "threshlinks",
             "base": "",
             "fields": [
@@ -855,6 +887,28 @@
                 {
                     "name": "new_conf",
                     "type": "groupconf"
+                },
+                {
+                    "name": "remove",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "updaterole",
+            "base": "",
+            "fields": [
+                {
+                    "name": "administrator",
+                    "type": "name"
+                },
+                {
+                    "name": "role",
+                    "type": "name"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
                 },
                 {
                     "name": "remove",
@@ -1017,6 +1071,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "testhasrole",
+            "type": "testhasrole",
+            "ricardian_contract": ""
+        },
+        {
             "name": "trunchistory",
             "type": "trunchistory",
             "ricardian_contract": ""
@@ -1044,6 +1103,11 @@
         {
             "name": "updateconf",
             "type": "updateconf",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updaterole",
+            "type": "updaterole",
             "ricardian_contract": ""
         },
         {
@@ -1129,6 +1193,13 @@
         {
             "name": "proposals",
             "type": "proposals",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "roles",
+            "type": "arole",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

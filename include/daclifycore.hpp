@@ -21,7 +21,7 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.2";
+const std::string VERSION = "0.1.3";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -137,6 +137,8 @@ CONTRACT daclifycore : public contract {
     ACTION fileupload(name uploader, name file_scope, string content);
     ACTION filepublish(name file_scope, string title, checksum256 trx_id, uint32_t block_num);
     ACTION filedelete(name file_scope, uint64_t id);
+    ACTION updaterole(const name administrator, const name role, const name account, const bool remove);
+    ACTION testhasrole(const name account, const name role);
 
     //dev
     ACTION clearbals(name scope);
@@ -301,6 +303,24 @@ CONTRACT daclifycore : public contract {
       eosio::indexed_by<"bymoduleacc"_n, eosio::const_mem_fun<modules, uint64_t, &modules::by_module_acc>>
     > modules_table;
 
+    struct[[ eosio::table("roles"), eosio::contract("daclifycore") ]] arole {
+      uint16_t id;                  // primary key, 65k roles supported
+      name role;                    // role name
+      name user;                    // user name
+
+      uint64_t primary_key() const { return id; }
+      uint64_t get_role() const { return role.value; }
+      uint64_t get_user() const { return user.value; }
+    };
+    using roles_table = eosio::multi_index<"roles"_n, arole,
+        indexed_by< "rolename"_n,
+            const_mem_fun<arole, uint64_t, &arole::get_role>
+        >,
+        indexed_by< "username"_n,
+            const_mem_fun<arole, uint64_t, &arole::get_user>
+        >
+    >;
+
     //functions//
     groupconf get_group_conf();
     bool is_account_voice_wrapper(const name& account);
@@ -353,6 +373,7 @@ CONTRACT daclifycore : public contract {
     bool is_freeos_participant(const name& account);
     bool check_custodians_kyc();
     bool check_custodians_freeos();
+    bool has_role(name account, name role);
 
     bool is_master_authorized_to_use_slave(const permission_level& master, const permission_level& slave){
       vector<permission_level> masterperm = { master };

@@ -1031,6 +1031,67 @@ void daclifycore::on_transfer(name from, name to, asset quantity, string memo){
   }
 }
 
+/**
+ * updaterole action adds or removes a role from an account
+ * 
+ * @param administrator the account that is adding the role
+ * @param role the name of the role to add or remove
+ * @param account the account to add the role to
+ * @param remove true to remove the role from the account, false to add the role to the account
+ */
+ACTION daclifycore::updaterole(const name administrator, const name role, const name account, const bool remove) {
+
+  require_auth(administrator);
+  check(is_custodian(administrator, false, false), "adduserrole must be actioned by a custodian");
+  check(role != ""_n && account != ""_n, "you must supply the name of the role and the account");
+
+  // check if the user has the role
+  roles_table _roles(get_self(), get_self().value);
+  auto user_idx = _roles.get_index<"username"_n>();
+  auto user_iter = user_idx.lower_bound(account.value);
+  while (user_iter != user_idx.end() && user_iter->user == account) {
+    if (user_iter->role == role) break;
+    user_iter++;
+  }
+
+  // user-role found
+  if (user_iter != user_idx.end() && user_iter->role == role && user_iter->user == account) {
+    if (remove == true) {
+      user_idx.erase(user_iter);
+    } else {
+      check(false, "the account already has the role specified so has not been added");
+    }
+    return;
+  }
+  
+  // user-role not found
+  if (remove == true) {
+    check(false, "the account does not have the role specified so has not been removed");
+  } else {
+    _roles.emplace(get_self(), [&]( auto& r ){
+                r.id    = _roles.available_primary_key();
+                r.role  = role;
+                r.user  = account;
+              });
+  }
+
+}
+
+/**
+ * testhasrole action checks if the account has the role and prints out a message to the console
+ * 
+ * @todo remove before deployment to production
+ * @param account the account to check
+ * @param role the name of the role to check for
+ */
+ACTION daclifycore::testhasrole(const name account, const name role) {
+  if (has_role(account, role)) {
+    check(false, "YES - user " + account.to_string() + " has role " + role.to_string());
+  } else {
+    check(false, "NO - user " + account.to_string() + " does not have role " + role.to_string());
+  }
+}
+
 //dev
 
 /**

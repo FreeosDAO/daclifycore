@@ -561,6 +561,14 @@ void daclifycore::archive_proposal(const name& archive_type, proposals_table& id
 
 }
 
+/**
+ * This function checks the participants table of the freeosclaim contract to see if the
+ * account is registered as a participant
+ * 
+ * @param account the account name of the participant
+ * 
+ * @return A boolean value, true if the account is a participant, otherwise false.
+ */
 bool daclifycore::is_freeos_participant(const name& account) {
   bool freeos_status = false;
 
@@ -573,6 +581,13 @@ bool daclifycore::is_freeos_participant(const name& account) {
   return freeos_status;  
 }
 
+/**
+ * This function checks if the account has been KYC verified by the proton KYC provider
+ * 
+ * @param account the account name of the user
+ * 
+ * @return a boolean value, true if the account has completed Proton-KYC, otherwise false.
+ */
 bool daclifycore::is_proton_kyced(const name& account) {
   // default result
   bool kyc_status {false};
@@ -599,6 +614,11 @@ bool daclifycore::is_proton_kyced(const name& account) {
   return kyc_status;
 }
 
+/**
+ * It checks if all the custodians have been KYCed
+ * 
+ * @return A boolean value, true if ALL custodians have completed Proton-KYC, otherwise false.
+ */
 bool daclifycore::check_custodians_kyc() {
 
   custodians_table _custodians(get_self(), get_self().value);
@@ -611,6 +631,11 @@ bool daclifycore::check_custodians_kyc() {
   return true;
 }
 
+/**
+ * It checks if all the custodians are freeos participants
+ * 
+ * @return A boolean value, true if ALL custodians are Freeos participants, otherwise false.
+ */
 bool daclifycore::check_custodians_freeos() {
 
   custodians_table _custodians(get_self(), get_self().value);
@@ -623,6 +648,25 @@ bool daclifycore::check_custodians_freeos() {
   return true;
 }
 
+/**
+ * This function checks the roles table for whether the account has the role
+ * 
+ * @param account The account name of the user to check
+ * @param role the role to check for
+ * 
+ * @return A boolean value, true if the user has the role, otherwise false.
+ */
+bool daclifycore::has_role(name account, name role) {
+    roles_table _roles(get_self(), get_self().value);
+    auto user_idx = _roles.get_index<"username"_n>();
+    auto user_iter = user_idx.lower_bound(account.value);
+    while (user_iter != user_idx.end() && user_iter->user == account) {
+      if (user_iter->role == role) break;
+      user_iter++;
+    }
+
+  return (user_iter != user_idx.end() && user_iter->role == role && user_iter->user == account);  
+}
 
 
 
