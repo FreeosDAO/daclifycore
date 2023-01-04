@@ -74,6 +74,8 @@ ACTION daclifycore::propose(name proposer, string title, string description, vec
   if(proposer != get_self() ){ //allow get_self to propose
     check(is_custodian(proposer, true, true), "You can't propose group actions because you are not a custodian.");
   }
+
+  check(has_effective_role(proposer, name("proposer")), "the proposer specified does not have the proposer role");
   
   time_point_sec now = time_point_sec(current_time_point());
 
@@ -175,6 +177,9 @@ ACTION daclifycore::propose(name proposer, string title, string description, vec
 ACTION daclifycore::approve(name approver, uint64_t id) {
   require_auth(approver);
   check(is_custodian(approver, true, true), "You can't approve because you are not a custodian.");
+
+  check(has_effective_role(approver, name("approver")), "the approver specified does not have the approver role");
+
   proposals_table _proposals(get_self(), get_self().value);
   auto prop_itr = _proposals.find(id);
   check(prop_itr != _proposals.end(), "Proposal not found.");
@@ -283,6 +288,9 @@ ACTION daclifycore::cancel(name canceler, uint64_t id) {
  */
 ACTION daclifycore::exec(name executer, uint64_t id) {
   require_auth(executer);
+
+  check(has_effective_role(executer, name("executer")), "the executer specified does not have the executer role");
+
   proposals_table _proposals(get_self(), get_self().value);
   auto prop_itr = _proposals.find(id);
   check(prop_itr != _proposals.end(), "Proposal not found.");
