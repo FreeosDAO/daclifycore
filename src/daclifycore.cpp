@@ -1083,9 +1083,19 @@ ACTION daclifycore::updaterole(const name administrator, const name role, const 
  * @todo remove before deployment to production
  * @param account the account to check
  * @param role the name of the role to check for
+ * @param effective specify true to test has_effective_role, false to test has_role 
  */
-ACTION daclifycore::testhasrole(const name account, const name role) {
-  if (has_role(account, role)) {
+ACTION daclifycore::testhasrole(const name account, const name role, const bool effective) {
+
+  bool has_role_result {false};
+
+  if (effective) {
+    has_role_result = has_effective_role(account, role);
+  } else {
+    has_role_result = has_role(account, role);
+  }
+
+  if (has_role_result) {
     check(false, "YES - user " + account.to_string() + " has role " + role.to_string());
   } else {
     check(false, "NO - user " + account.to_string() + " does not have role " + role.to_string());

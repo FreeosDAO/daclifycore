@@ -657,15 +657,40 @@ bool daclifycore::check_custodians_freeos() {
  * @return A boolean value, true if the user has the role, otherwise false.
  */
 bool daclifycore::has_role(name account, name role) {
-    roles_table _roles(get_self(), get_self().value);
-    auto user_idx = _roles.get_index<"username"_n>();
-    auto user_iter = user_idx.lower_bound(account.value);
-    while (user_iter != user_idx.end() && user_iter->user == account) {
-      if (user_iter->role == role) break;
-      user_iter++;
-    }
+  roles_table _roles(get_self(), get_self().value);
+  auto user_idx = _roles.get_index<"username"_n>();
+  auto user_iter = user_idx.lower_bound(account.value);
+  while (user_iter != user_idx.end() && user_iter->user == account) {
+    if (user_iter->role == role) break;
+    user_iter++;
+  }
 
   return (user_iter != user_idx.end() && user_iter->role == role && user_iter->user == account);  
+}
+
+/**
+ * This function differs from has_role in that it checks whether a role has any members.
+ * If the role has not yet been created then we grant role access to the user. This allows
+ * for the starting condition, i.e. custodians must get role-approval to propose, vote and
+ * execute a proposal containing the updaterole action.
+ * 
+ * @param account The account name of the user to check
+ * @param role the role to check for
+ * 
+ * @return A boolean value, true if the user has the role, otherwise false.
+ */
+bool daclifycore::has_effective_role(name account, name role) {
+  // check if the role is active, i.e. does it have members
+  roles_table _roles(get_self(), get_self().value);
+  auto role_idx = _roles.get_index<"rolename"_n>();
+  auto role_iter = role_idx.lower_bound(role.value);
+
+  // if the role does not yet have any members then return true
+  if (role_iter == role_idx.end()) {
+    return true;
+  } else {
+    return has_role(account, role);
+  }
 }
 
 

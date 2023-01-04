@@ -21,7 +21,7 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.3";
+const std::string VERSION = "0.1.4";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -138,7 +138,7 @@ CONTRACT daclifycore : public contract {
     ACTION filepublish(name file_scope, string title, checksum256 trx_id, uint32_t block_num);
     ACTION filedelete(name file_scope, uint64_t id);
     ACTION updaterole(const name administrator, const name role, const name account, const bool remove);
-    ACTION testhasrole(const name account, const name role);
+    ACTION testhasrole(const name account, const name role, const bool effective);
 
     //dev
     ACTION clearbals(name scope);
@@ -374,6 +374,7 @@ CONTRACT daclifycore : public contract {
     bool check_custodians_kyc();
     bool check_custodians_freeos();
     bool has_role(name account, name role);
+    bool has_effective_role(name account, name role);
 
     bool is_master_authorized_to_use_slave(const permission_level& master, const permission_level& slave){
       vector<permission_level> masterperm = { master };
