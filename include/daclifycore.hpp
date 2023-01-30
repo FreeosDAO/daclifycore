@@ -21,7 +21,7 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.4";
+const std::string VERSION = "0.1.6";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -138,7 +138,8 @@ CONTRACT daclifycore : public contract {
     ACTION filepublish(name file_scope, string title, checksum256 trx_id, uint32_t block_num);
     ACTION filedelete(name file_scope, uint64_t id);
     ACTION updaterole(const name administrator, const name role, const name account, const bool remove);
-    ACTION testhasrole(const name account, const name role, const bool effective);
+    ACTION updateprivs(const name administrator, const name role, const std::vector<name> privileges, const bool remove);
+    ACTION testhaspriv(const name account, const name privilege, const bool effective);
 
     //dev
     ACTION clearbals(name scope);
@@ -304,7 +305,7 @@ CONTRACT daclifycore : public contract {
     > modules_table;
 
     struct[[ eosio::table("roles"), eosio::contract("daclifycore") ]] arole {
-      uint16_t id;                  // primary key, 65k roles supported
+      uint64_t id;                  // primary key
       name role;                    // role name
       name user;                    // user name
 
@@ -320,6 +321,15 @@ CONTRACT daclifycore : public contract {
             const_mem_fun<arole, uint64_t, &arole::get_user>
         >
     >;
+
+    struct[[ eosio::table("privileges"), eosio::contract("daclifycore") ]] aprivilege {
+      name role;                    // role name
+      std::vector<name> privileges; // privileges
+
+      uint64_t primary_key() const { return role.value; }
+    };
+    using privileges_table = eosio::multi_index<"privileges"_n, aprivilege>;
+
 
     //functions//
     groupconf get_group_conf();
@@ -373,8 +383,7 @@ CONTRACT daclifycore : public contract {
     bool is_freeos_participant(const name& account);
     bool check_custodians_kyc();
     bool check_custodians_freeos();
-    bool has_role(name account, name role);
-    bool has_effective_role(name account, name role);
+    bool has_privilege(name account, name privilege, bool effective);
 
     bool is_master_authorized_to_use_slave(const permission_level& master, const permission_level& slave){
       vector<permission_level> masterperm = { master };

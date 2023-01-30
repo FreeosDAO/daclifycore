@@ -75,7 +75,7 @@ ACTION daclifycore::propose(name proposer, string title, string description, vec
     check(is_custodian(proposer, true, true), "You can't propose group actions because you are not a custodian.");
   }
 
-  check(has_effective_role(proposer, name("proposer")), "the proposer specified does not have the proposer role");
+  check(has_privilege(proposer, name("proposer"), true), "the proposer specified does not have the proposer role");
   
   time_point_sec now = time_point_sec(current_time_point());
 
@@ -178,7 +178,7 @@ ACTION daclifycore::approve(name approver, uint64_t id) {
   require_auth(approver);
   check(is_custodian(approver, true, true), "You can't approve because you are not a custodian.");
 
-  check(has_effective_role(approver, name("approver")), "the approver specified does not have the approver role");
+  check(has_privilege(approver, name("approver"), true), "the approver specified does not have the approver role");
 
   proposals_table _proposals(get_self(), get_self().value);
   auto prop_itr = _proposals.find(id);
@@ -289,7 +289,7 @@ ACTION daclifycore::cancel(name canceler, uint64_t id) {
 ACTION daclifycore::exec(name executer, uint64_t id) {
   require_auth(executer);
 
-  check(has_effective_role(executer, name("executer")), "the executer specified does not have the executer role");
+  check(has_privilege(executer, name("executer"), true), "the executer specified does not have the executer role");
 
   proposals_table _proposals(get_self(), get_self().value);
   auto prop_itr = _proposals.find(id);
@@ -1039,6 +1039,8 @@ void daclifycore::on_transfer(name from, name to, asset quantity, string memo){
   }
 }
 
+
+
 /**
  * updaterole action adds or removes a role from an account
  * 
@@ -1050,13 +1052,13 @@ void daclifycore::on_transfer(name from, name to, asset quantity, string memo){
 ACTION daclifycore::updaterole(const name administrator, const name role, const name account, const bool remove) {
 
   require_auth(administrator);
-  check(is_custodian(administrator, false, false), "adduserrole must be actioned by a custodian");
+  check(is_custodian(administrator, false, false), "updaterole must be actioned by a custodian");
   check(role != ""_n && account != ""_n, "you must supply the name of the role and the account");
 
   // check if the user has the role
   roles_table _roles(get_self(), get_self().value);
   auto user_idx = _roles.get_index<"username"_n>();
-  auto user_iter = user_idx.lower_bound(account.value);
+  auto user_iter = user_idx.find(account.value);
   while (user_iter != user_idx.end() && user_iter->user == account) {
     if (user_iter->role == role) break;
     user_iter++;
@@ -1085,28 +1087,68 @@ ACTION daclifycore::updaterole(const name administrator, const name role, const 
 
 }
 
+
 /**
- * testhasrole action checks if the account has the role and prints out a message to the console
+ * updateprivs action adds or removes a privileges for role
+ * 
+ * @param administrator the account that is adding the role
+ * @param role the name of the role to add or remove
+ * @param privileges a vector of privileges to associate with the role
+ * @param remove true to remove the privilges from the role, false to add the privileges to the role
+ */
+ACTION daclifycore::updateprivs(const name administrator, const name role, const std::vector<name> privileges, const bool remove) {
+
+  require_auth(administrator);
+  check(is_custodian(administrator, false, false), "updateprivs must be actioned by a custodian");
+  check(role != ""_n && (remove == true || privileges.size() != 0), "you must supply the name of the role and one or more privileges");
+
+  // check if the role exists
+  privileges_table _privs(get_self(), get_self().value);
+  auto role_iter = _privs.find(role.value);
+
+  // insert or update
+  if (remove == false) {
+
+    if (role_iter != _privs.end()) {
+      // update values
+      _privs.modify(role_iter, get_self(), [&](auto &p) {
+        p.privileges = privileges;
+      });
+    } else {
+      _privs.emplace(get_self(), [&]( auto& p ){
+        p.role  = role;
+        p.privileges  = privileges;
+      });
+    }
+
+  }
+
+  // removing
+  if (remove == true) {
+
+    if (role_iter != _privs.end()) {
+      _privs.erase(role_iter);
+    } else {
+      check(false, "the specified role is not found in the privileges table so has not been removed");
+    }
+  }
+
+}
+
+/**
+ * testhaspriv action checks if the account has the privilege and prints out a message to the console
  * 
  * @todo remove before deployment to production
  * @param account the account to check
- * @param role the name of the role to check for
- * @param effective specify true to test has_effective_role, false to test has_role 
+ * @param privilege the name of the privilege (e.g. proposer) to check for
+ * @param effective specify true to include test for starting condition (i.e. if no privileges have yet been defined) 
  */
-ACTION daclifycore::testhasrole(const name account, const name role, const bool effective) {
+ACTION daclifycore::testhaspriv(const name account, const name privilege, const bool effective) {
 
-  bool has_role_result {false};
-
-  if (effective) {
-    has_role_result = has_effective_role(account, role);
+  if (has_privilege(account, privilege, effective)) {
+    check(false, "YES - user " + account.to_string() + " has " + privilege.to_string() + " privilege");
   } else {
-    has_role_result = has_role(account, role);
-  }
-
-  if (has_role_result) {
-    check(false, "YES - user " + account.to_string() + " has role " + role.to_string());
-  } else {
-    check(false, "NO - user " + account.to_string() + " does not have role " + role.to_string());
+    check(false, "NO - user " + account.to_string() + " does not have " + privilege.to_string() + " privilege");
   }
 }
 

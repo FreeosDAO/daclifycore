@@ -40,12 +40,26 @@
             ]
         },
         {
+            "name": "aprivilege",
+            "base": "",
+            "fields": [
+                {
+                    "name": "role",
+                    "type": "name"
+                },
+                {
+                    "name": "privileges",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
             "name": "arole",
             "base": "",
             "fields": [
                 {
                     "name": "id",
-                    "type": "uint16"
+                    "type": "uint64"
                 },
                 {
                     "name": "role",
@@ -751,7 +765,7 @@
             ]
         },
         {
-            "name": "testhasrole",
+            "name": "testhaspriv",
             "base": "",
             "fields": [
                 {
@@ -759,7 +773,7 @@
                     "type": "name"
                 },
                 {
-                    "name": "role",
+                    "name": "privilege",
                     "type": "name"
                 },
                 {
@@ -891,6 +905,28 @@
                 {
                     "name": "new_conf",
                     "type": "groupconf"
+                },
+                {
+                    "name": "remove",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "updateprivs",
+            "base": "",
+            "fields": [
+                {
+                    "name": "administrator",
+                    "type": "name"
+                },
+                {
+                    "name": "role",
+                    "type": "name"
+                },
+                {
+                    "name": "privileges",
+                    "type": "name[]"
                 },
                 {
                     "name": "remove",
@@ -1075,8 +1111,8 @@
             "ricardian_contract": ""
         },
         {
-            "name": "testhasrole",
-            "type": "testhasrole",
+            "name": "testhaspriv",
+            "type": "testhaspriv",
             "ricardian_contract": ""
         },
         {
@@ -1107,6 +1143,11 @@
         {
             "name": "updateconf",
             "type": "updateconf",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updateprivs",
+            "type": "updateprivs",
             "ricardian_contract": ""
         },
         {
@@ -1183,6 +1224,13 @@
         {
             "name": "modules",
             "type": "modules",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "privileges",
+            "type": "aprivilege",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
