@@ -21,7 +21,7 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.6";
+const std::string VERSION = "0.1.7";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -81,8 +81,8 @@ CONTRACT daclifycore : public contract {
       bool withdrawals = false;
       bool internal_transfers = false;
       bool deposits = false;
-      permission_level maintainer_account = permission_level(name("daclifyhub11"), name("active") );//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      name hub_account = name("daclifyhub11");
+      permission_level maintainer_account = permission_level(name("fdachub"), name("active") );//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      name hub_account = name("fdachub");
       bool proton_kyc_enabled = false;
       bool freeos_participation_enabled = false;
       
