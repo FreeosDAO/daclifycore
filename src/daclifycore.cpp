@@ -1051,7 +1051,8 @@ void daclifycore::on_transfer(name from, name to, asset quantity, string memo){
  */
 ACTION daclifycore::updaterole(const name administrator, const name role, const name account, const bool remove) {
 
-  require_auth(administrator);
+  // require_auth(administrator);
+  require_auth(get_self());
   check(is_custodian(administrator, false, false), "updaterole must be actioned by a custodian");
   check(role != ""_n && account != ""_n, "you must supply the name of the role and the account");
 
@@ -1098,7 +1099,8 @@ ACTION daclifycore::updaterole(const name administrator, const name role, const 
  */
 ACTION daclifycore::updateprivs(const name administrator, const name role, const std::vector<name> privileges, const bool remove) {
 
-  require_auth(administrator);
+  //require_auth(administrator);
+  require_auth(get_self());
   check(is_custodian(administrator, false, false), "updateprivs must be actioned by a custodian");
   check(role != ""_n && (remove == true || privileges.size() != 0), "you must supply the name of the role and one or more privileges");
 

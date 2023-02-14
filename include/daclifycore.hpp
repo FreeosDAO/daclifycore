@@ -21,7 +21,7 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.7";
+const std::string VERSION = "0.1.8";
 
 CONTRACT daclifycore : public contract {
   public:

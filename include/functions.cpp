@@ -660,14 +660,17 @@ bool daclifycore::check_custodians_freeos() {
 bool daclifycore::has_privilege(name account, name privilege, bool effective) {
 
   privileges_table _privs(get_self(), get_self().value);
+  roles_table _roles(get_self(), get_self().value);
 
   if (effective == true) {
-    // test to see if the privileges table is empty
+    // when 'effective is true, a user gets awarded the privilege when the roles/privileges system has not
+    // yet been completed, i.e. either the roles or privileges tables are empty
     auto first_privilege = _privs.begin();
-    if (first_privilege == _privs.end()) return true;
+    auto first_role = _roles.begin();
+
+    if (first_privilege == _privs.end() || first_role == _roles.end()) return true;
   }
 
-  roles_table _roles(get_self(), get_self().value);
   auto user_idx = _roles.get_index<"username"_n>();
   auto user_iter = user_idx.find(account.value);
   while (user_iter != user_idx.end() && user_iter->user == account) {
