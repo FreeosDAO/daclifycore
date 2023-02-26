@@ -631,7 +631,10 @@ ACTION daclifycore::trunchistory( name archive_type, uint32_t batch_size){
  * @param actor The accountname of the member to be registered.
  */
 ACTION daclifycore::regmember(name actor){
-  require_auth(actor);
+
+  //require_auth(actor);
+  require_auth(get_self());
+  
   groupconf conf = get_group_conf();
   check(conf.member_registration, "Member registration is disabled.");
   check(is_account_voice_wrapper(actor), "Accountname not eligible for registering as member.");
@@ -1102,7 +1105,10 @@ ACTION daclifycore::updateprivs(const name administrator, const name role, const
   //require_auth(administrator);
   require_auth(get_self());
   check(is_custodian(administrator, false, false), "updateprivs must be actioned by a custodian");
-  check(role != ""_n && (remove == true || privileges.size() != 0), "you must supply the name of the role and one or more privileges");
+  check(role != ""_n, "you must supply the name of the role");
+  if (remove == false) {
+     check(privileges.size() != 0, "you must specify an array of privileges");
+  }
 
   // check if the role exists
   privileges_table _privs(get_self(), get_self().value);
