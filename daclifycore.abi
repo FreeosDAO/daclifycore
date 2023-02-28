@@ -765,24 +765,6 @@
             ]
         },
         {
-            "name": "testhaspriv",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "privilege",
-                    "type": "name"
-                },
-                {
-                    "name": "effective",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "threshlinks",
             "base": "",
             "fields": [
@@ -980,7 +962,7 @@
             "fields": []
         },
         {
-            "name": "widthdraw",
+            "name": "withdraw",
             "base": "",
             "fields": [
                 {
@@ -1111,11 +1093,6 @@
             "ricardian_contract": ""
         },
         {
-            "name": "testhaspriv",
-            "type": "testhaspriv",
-            "ricardian_contract": ""
-        },
-        {
             "name": "trunchistory",
             "type": "trunchistory",
             "ricardian_contract": ""
@@ -1166,8 +1143,8 @@
             "ricardian_contract": ""
         },
         {
-            "name": "widthdraw",
-            "type": "widthdraw",
+            "name": "withdraw",
+            "type": "withdraw",
             "ricardian_contract": ""
         }
     ],

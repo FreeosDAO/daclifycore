@@ -499,7 +499,7 @@ ACTION daclifycore::isetcusts(vector<name> accounts){
  * @param account The account that is withdrawing
  * @param amount The amount of tokens to withdraw.
  */
-ACTION daclifycore::widthdraw(name account, extended_asset amount) {
+ACTION daclifycore::withdraw(name account, extended_asset amount) {
   require_auth(account);
   check(get_group_conf().withdrawals, "Withdrawals are disabled");
   check(account != get_self(), "Can't withdraw to self.");
@@ -634,7 +634,7 @@ ACTION daclifycore::regmember(name actor){
 
   //require_auth(actor);
   require_auth(get_self());
-  
+
   groupconf conf = get_group_conf();
   check(conf.member_registration, "Member registration is disabled.");
   check(is_account_voice_wrapper(actor), "Accountname not eligible for registering as member.");
@@ -1150,7 +1150,7 @@ ACTION daclifycore::updateprivs(const name administrator, const name role, const
  * @param account the account to check
  * @param privilege the name of the privilege (e.g. proposer) to check for
  * @param effective specify true to include test for starting condition (i.e. if no privileges have yet been defined) 
- */
+
 ACTION daclifycore::testhaspriv(const name account, const name privilege, const bool effective) {
 
   if (has_privilege(account, privilege, effective)) {
@@ -1159,6 +1159,7 @@ ACTION daclifycore::testhaspriv(const name account, const name privilege, const 
     check(false, "NO - user " + account.to_string() + " does not have " + privilege.to_string() + " privilege");
   }
 }
+ */
 
 //dev
 

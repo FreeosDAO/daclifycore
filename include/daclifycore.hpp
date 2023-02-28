@@ -21,7 +21,7 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.10";
+const std::string VERSION = "0.1.11";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -108,7 +108,7 @@ CONTRACT daclifycore : public contract {
     ACTION exec(name executer, uint64_t id);
     ACTION trunchistory(name archive_type, uint32_t batch_size);
 
-    ACTION widthdraw(name account, extended_asset amount);
+    ACTION withdraw(name account, extended_asset amount);
     ACTION internalxfr(name from, name to, extended_asset amount, string msg);
     ACTION imalive(name account);
     //ACTION spawnchildac(name new_account, asset ram_amount, asset net_amount, asset cpu_amount, name parent, name module_name);
@@ -139,7 +139,7 @@ CONTRACT daclifycore : public contract {
     ACTION filedelete(name file_scope, uint64_t id);
     ACTION updaterole(const name administrator, const name role, const name account, const bool remove);
     ACTION updateprivs(const name administrator, const name role, const std::vector<name> privileges, const bool remove);
-    ACTION testhaspriv(const name account, const name privilege, const bool effective);
+    // ACTION testhaspriv(const name account, const name privilege, const bool effective);
 
     //dev
     ACTION clearbals(name scope);
