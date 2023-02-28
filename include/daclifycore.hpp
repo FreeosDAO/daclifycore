@@ -21,7 +21,10 @@ using namespace eosio;
   name freeos_participants_contract = name("alphaclaim");
 #endif
 
-const std::string VERSION = "0.1.11";
+// define the authority model: DACLIFY_DEFAULT or ROLES_PRIVS
+#define AUTH_MODEL DACLIFY_DEFAULT
+
+const std::string VERSION = "0.1.12";
 
 CONTRACT daclifycore : public contract {
   public:

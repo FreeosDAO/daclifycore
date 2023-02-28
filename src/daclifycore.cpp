@@ -75,7 +75,9 @@ ACTION daclifycore::propose(name proposer, string title, string description, vec
     check(is_custodian(proposer, true, true), "You can't propose group actions because you are not a custodian.");
   }
 
+#if AUTH_MODEL == ROLES_PRIVS
   check(has_privilege(proposer, name("proposer"), true), "the proposer specified does not have the proposer role");
+#endif
   
   time_point_sec now = time_point_sec(current_time_point());
 
@@ -178,7 +180,9 @@ ACTION daclifycore::approve(name approver, uint64_t id) {
   require_auth(approver);
   check(is_custodian(approver, true, true), "You can't approve because you are not a custodian.");
 
+#if AUTH_MODEL == ROLES_PRIVS
   check(has_privilege(approver, name("approver"), true), "the approver specified does not have the approver role");
+#endif
 
   proposals_table _proposals(get_self(), get_self().value);
   auto prop_itr = _proposals.find(id);
@@ -289,7 +293,9 @@ ACTION daclifycore::cancel(name canceler, uint64_t id) {
 ACTION daclifycore::exec(name executer, uint64_t id) {
   require_auth(executer);
 
+#if AUTH_MODEL == ROLES_PRIVS
   check(has_privilege(executer, name("executer"), true), "the executer specified does not have the executer role");
+#endif
 
   proposals_table _proposals(get_self(), get_self().value);
   auto prop_itr = _proposals.find(id);
