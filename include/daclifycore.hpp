@@ -24,7 +24,7 @@ using namespace eosio;
 // define the authority model: DACLIFY_DEFAULT or ROLES_PRIVS
 #define AUTH_MODEL DACLIFY_DEFAULT
 
-const std::string VERSION = "0.1.12";
+const std::string VERSION = "0.1.13";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -78,7 +78,7 @@ CONTRACT daclifycore : public contract {
       uint32_t inactivate_cust_after_sec = 60*60*24*30;
       bool exec_on_threshold_zero = false;
       uint8_t proposal_archive_size = 3;
-      bool member_registration = false;
+      bool member_registration = true;
       bool userterms = false;
       name profile_provider;
       bool withdrawals = false;
