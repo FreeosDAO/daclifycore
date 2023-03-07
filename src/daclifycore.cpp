@@ -649,7 +649,7 @@ ACTION daclifycore::regmember(name actor){
   auto mem_itr = _members.find(actor.value);
   check(mem_itr == _members.end(), "Accountname already a member.");
 
-  _members.emplace( actor, [&]( auto& n){
+  _members.emplace( get_self(), [&]( auto& n){
     n.account = actor;
     n.member_since = time_point_sec(current_time_point() );
   });
@@ -731,7 +731,7 @@ ACTION daclifycore::updateavatar(name actor, string img_url){
   auto itr = _avatars.find(actor.value);
   if(itr == _avatars.end() ){
     //add new
-    _avatars.emplace( actor, [&]( auto& n){
+    _avatars.emplace( get_self(), [&]( auto& n){
       n.account = actor;
       n.img_url = img_url;
     });
@@ -760,7 +760,7 @@ ACTION daclifycore::updatprofile(name actor, name key, string data){
   auto itr = _profiledata.find(actor.value);
   if(itr == _profiledata.end() ){
     //add new
-    _profiledata.emplace( actor, [&]( auto& n){
+    _profiledata.emplace( get_self(), [&]( auto& n){
       n.account = actor;
       n.data[key] = data;
       n.last_update = time_point_sec(current_time_point());
