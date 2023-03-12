@@ -638,9 +638,8 @@ ACTION daclifycore::trunchistory( name archive_type, uint32_t batch_size){
  */
 ACTION daclifycore::regmember(name actor){
 
-  //require_auth(actor);
-  require_auth(get_self());
-
+  require_auth(actor);
+  
   groupconf conf = get_group_conf();
   check(conf.member_registration, "Member registration is disabled.");
   check(is_account_voice_wrapper(actor), "Accountname not eligible for registering as member.");
