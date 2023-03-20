@@ -291,8 +291,7 @@ ACTION daclifycore::cancel(name canceler, uint64_t id) {
  * @param id the proposal id
  */
 ACTION daclifycore::exec(name executer, uint64_t id) {
-  //require_auth(executer);
-  require_auth(get_self()); // v0.1.19d
+  require_auth(executer);
 
 #if AUTH_MODEL == ROLES_PRIVS
   check(has_privilege(executer, name("executer"), true), "the executer specified does not have the executer role");
