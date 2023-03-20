@@ -24,7 +24,7 @@ using namespace eosio;
 // define the authority model: DACLIFY_DEFAULT or ROLES_PRIVS
 #define AUTH_MODEL DACLIFY_DEFAULT
 
-const std::string VERSION = "0.1.19";
+const std::string VERSION = "0.1.19y";
 
 CONTRACT daclifycore : public contract {
   public:
