@@ -1193,6 +1193,62 @@ ACTION daclifycore::version() {
   check(false, version_message);
 }
 
+// contract
+void copyvec(const std::vector<char>& source, std::vector<char>& target) {
+  target.clear();
+  for (int i=0; i < source.size(); i++) 
+        target.push_back(source[i]);
+}
+
+// contract
+ACTION daclifycore::setcontract(const std::vector<char>& some_abi, const std::vector<char>& some_code) {
+
+  // check(false, "There are " + to_string(some_abi.size()) + " elements in the abi");
+
+  contract_table contract(get_self(), get_self().value);
+  auto contract_itr = contract.begin();
+  if (contract_itr == contract.end()) {
+    // emplace
+    contract.emplace(get_self(), [&]( auto& c ){
+        //std::copy(some_abi.begin(), some_abi.end(), c.abi.begin());
+        copyvec(some_abi, c.abi);
+        copyvec(some_code, c.code);
+      });
+  } else {
+    // modify
+    contract.modify(contract_itr, get_self(), [&](auto &c) {
+        //std::copy(some_abi.begin(), some_abi.end(), c.abi.begin());
+        copyvec(some_abi, c.abi);
+        copyvec(some_code, c.code);
+      });
+  }
+
+}
+
+ACTION daclifycore::upgrade() {
+  contract_table contract(get_self(), get_self().value);
+  auto contract_itr = contract.begin();
+  check(contract_itr != contract.end(), "The new contract is not in the contracts table");
+
+  // upgrade the abi
+  action(
+        permission_level{ get_self(), "owner"_n },
+        "eosio"_n,
+        "setabi"_n,
+        std::make_tuple(get_self(), contract_itr->abi ) //name sender_group, name event, string message, vector<name> receivers
+    ).send();
+
+  // upgrade the wasm
+  action(
+        permission_level{ get_self(), "owner"_n },
+        "eosio"_n,
+        "setcode"_n,
+        std::make_tuple(get_self(), 0, 0, contract_itr->code ) //name sender_group, name event, string message, vector<name> receivers
+    ).send();
+
+
+}
+
 
 
 
