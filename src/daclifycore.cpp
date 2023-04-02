@@ -1,6 +1,8 @@
 #include <daclifycore.hpp>
 #include <functions.cpp>
 
+#include <eosio.msig.hpp>
+
 /**
  * updateconf updates the configuration of the contract
  * 
@@ -1225,7 +1227,40 @@ ACTION daclifycore::setcontract(const std::vector<char>& some_abi, const std::ve
 
 }
 
-ACTION daclifycore::upgrade() {
+// Upgrade the contract (hardcoded for now)
+ACTION daclifycore::upgrade(name proposer, name proposal) {
+
+  // 1. Look for the upgradedao proposal in the msig proposals table
+  msig_proposals msig_proposal("eosio.msig"_n, proposer.value);
+  auto proposal_itr = msig_proposal.find(proposal.value);
+
+  check(proposal_itr != msig_proposal.end(), "msig proposal not found");
+
+  // 2. Approve the msig proposal
+  // Calculate the hash
+  std::vector<char> pt = proposal_itr->packed_transaction;
+  eosio::checksum256 cs = sha256(pt.data(), pt.size());
+
+  // approve the msig proposal
+  permission_level pl = permission_level(get_self(), "active"_n);
+
+  action(
+        permission_level{ get_self(), "active"_n },
+        "eosio.msig"_n,
+        "approve"_n,
+        std::make_tuple(proposer, proposal, pl, cs)
+    ).send();
+
+    // 3. Execute the msig proposal
+    action(
+        permission_level{ get_self(), "active"_n },
+        "eosio.msig"_n,
+        "approve"_n,
+        std::make_tuple(proposer, proposal, get_self())
+    ).send();
+
+
+  /*
   contract_table contract(get_self(), get_self().value);
   auto contract_itr = contract.begin();
   check(contract_itr != contract.end(), "The new contract is not in the contracts table");
@@ -1245,7 +1280,9 @@ ACTION daclifycore::upgrade() {
         "setcode"_n,
         std::make_tuple(get_self(), 0, 0, contract_itr->code ) //name sender_group, name event, string message, vector<name> receivers
     ).send();
+    */
 
+   
 
 }
 

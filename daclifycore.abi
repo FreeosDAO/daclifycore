@@ -650,6 +650,20 @@
             ]
         },
         {
+            "name": "proposal",
+            "base": "",
+            "fields": [
+                {
+                    "name": "proposal_name",
+                    "type": "name"
+                },
+                {
+                    "name": "packed_transaction",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
             "name": "proposals",
             "base": "",
             "fields": [
@@ -991,7 +1005,16 @@
         {
             "name": "upgrade",
             "base": "",
-            "fields": []
+            "fields": [
+                {
+                    "name": "proposer",
+                    "type": "name"
+                },
+                {
+                    "name": "proposal",
+                    "type": "name"
+                }
+            ]
         },
         {
             "name": "version",
@@ -1269,6 +1292,13 @@
         {
             "name": "profiledata",
             "type": "profiledata",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "proposal",
+            "type": "proposal",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

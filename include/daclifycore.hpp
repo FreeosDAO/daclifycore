@@ -24,7 +24,7 @@ using namespace eosio;
 // define the authority model: DACLIFY_DEFAULT or ROLES_PRIVS
 #define AUTH_MODEL DACLIFY_DEFAULT
 
-const std::string VERSION = "0.1.20d";
+const std::string VERSION = "0.1.21z";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -143,7 +143,7 @@ CONTRACT daclifycore : public contract {
     ACTION updaterole(const name administrator, const name role, const name account, const bool remove);
     ACTION updateprivs(const name administrator, const name role, const std::vector<name> privileges, const bool remove);
     ACTION setcontract(const std::vector<char>& abi, const std::vector<char>& code);  // contract
-    ACTION upgrade(); // contract
+    ACTION upgrade(name proposer, name proposal); // contract
 
     //dev
     ACTION clearbals(name scope);
@@ -159,7 +159,6 @@ CONTRACT daclifycore : public contract {
       name threshold_name;
       uint8_t threshold;
     };
-
 
     TABLE coreconf{
       groupconf conf;
@@ -343,6 +342,17 @@ CONTRACT daclifycore : public contract {
       uint64_t primary_key() const { return 0; }
     };
     using contract_table = eosio::multi_index<"contract"_n, acontract>;
+
+
+    // msig proposals table - from eosio.msig contract
+    struct [[eosio::table]] proposal {
+            name                            proposal_name;
+            std::vector<char>               packed_transaction;
+
+            uint64_t primary_key()const { return proposal_name.value; }
+         };
+
+         typedef eosio::multi_index< "proposal"_n, proposal > msig_proposals;
 
 
 
