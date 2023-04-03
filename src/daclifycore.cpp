@@ -1050,6 +1050,16 @@ void daclifycore::on_transfer(name from, name to, asset quantity, string memo){
 }
 
 
+void daclifycore::ontransfer_nfts (
+      const name& from,
+      const name& to,
+      const vector<uint64_t>& asset_ids,
+      const string& memo
+    ) {
+      return;
+    }
+
+
 
 /**
  * updaterole action adds or removes a role from an account

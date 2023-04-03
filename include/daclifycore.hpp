@@ -16,15 +16,17 @@ using namespace eosio;
 #ifdef PRODUCTION
   name kyc_verification_contract = name("eosio.proton");
   name freeos_participants_contract = name("freeosclaim");
+  name HUB_ACCOUNT = name("daoscapehub");
 #else
   name kyc_verification_contract = name("alphaconfig");
   name freeos_participants_contract = name("alphaclaim");
+  name HUB_ACCOUNT = name("fdachub");
 #endif
 
 // define the authority model: DACLIFY_DEFAULT or ROLES_PRIVS
 #define AUTH_MODEL DACLIFY_DEFAULT
 
-const std::string VERSION = "0.1.21z";
+const std::string VERSION = "0.1.23";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -84,8 +86,8 @@ CONTRACT daclifycore : public contract {
       bool withdrawals = false;
       bool internal_transfers = false;
       bool deposits = false;
-      permission_level maintainer_account = permission_level(name("fdachub"), name("active") );//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      name hub_account = name("fdachub");
+      permission_level maintainer_account = permission_level(HUB_ACCOUNT, name("active") );//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      name hub_account = HUB_ACCOUNT;
       bool proton_kyc_enabled = false;
       bool freeos_participation_enabled = false;
       
@@ -152,6 +154,14 @@ CONTRACT daclifycore : public contract {
     //notification handlers
     [[eosio::on_notify("*::transfer")]]
     void on_transfer(name from, name to, asset quantity, string memo);
+
+    [[eosio::on_notify("atomicassets::transfer")]]
+    void ontransfer_nfts (
+      const name& from,
+      const name& to,
+      const vector<uint64_t>& asset_ids,
+      const string& memo
+    );
 
   private:
   
