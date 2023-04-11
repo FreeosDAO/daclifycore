@@ -12,12 +12,16 @@
 using namespace std;
 using namespace eosio;
 
-  // contracts required for integration with Proton and Freeos
+const std::string version = "0.1.24";
+
+// contracts required for integration with Proton and Freeos
 #ifdef PRODUCTION
+  std::string VERSION = version;
   name kyc_verification_contract = name("eosio.proton");
   name freeos_participants_contract = name("freeosclaim");
   name HUB_ACCOUNT = name("daoscapehub");
 #else
+  std::string VERSION = version + " (Testnet)";
   name kyc_verification_contract = name("alphaconfig");
   name freeos_participants_contract = name("alphaclaim");
   name HUB_ACCOUNT = name("fdachub");
@@ -25,8 +29,6 @@ using namespace eosio;
 
 // define the authority model: DACLIFY_DEFAULT or ROLES_PRIVS
 #define AUTH_MODEL DACLIFY_DEFAULT
-
-const std::string VERSION = "0.1.23";
 
 CONTRACT daclifycore : public contract {
   public:
@@ -144,9 +146,7 @@ CONTRACT daclifycore : public contract {
     ACTION filedelete(name file_scope, uint64_t id);
     ACTION updaterole(const name administrator, const name role, const name account, const bool remove);
     ACTION updateprivs(const name administrator, const name role, const std::vector<name> privileges, const bool remove);
-    ACTION setcontract(const std::vector<char>& abi, const std::vector<char>& code);  // contract
-    ACTION upgrade(name proposer, name proposal); // contract
-
+    
     //dev
     ACTION clearbals(name scope);
     ACTION version();
@@ -342,28 +342,6 @@ CONTRACT daclifycore : public contract {
       uint64_t primary_key() const { return role.value; }
     };
     using privileges_table = eosio::multi_index<"privileges"_n, aprivilege>;
-
-    // contract
-    struct[[ eosio::table("contract"), eosio::contract("daclifycore")]] acontract {
-      std::vector<char> abi;
-      std::vector<char> code;
-      bool approved {false};
-
-      uint64_t primary_key() const { return 0; }
-    };
-    using contract_table = eosio::multi_index<"contract"_n, acontract>;
-
-
-    // msig proposals table - from eosio.msig contract
-    struct [[eosio::table]] proposal {
-            name                            proposal_name;
-            std::vector<char>               packed_transaction;
-
-            uint64_t primary_key()const { return proposal_name.value; }
-         };
-
-         typedef eosio::multi_index< "proposal"_n, proposal > msig_proposals;
-
 
 
     //functions//
