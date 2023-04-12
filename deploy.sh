@@ -1,8 +1,7 @@
-name=$1
-
-if [[ -n "$name" ]]; then
-    cleos -u https://proton.testnet.protonuk.io set contract $1 ~/contracts/daclifycore daclifycore_testnet.wasm daclifycore_testnet.abi
+if [[ -n $1 ]]
+ then
+    cleos -u https://proton.testnet.protonuk.io set contract $1 ~/contracts/daoscapecore daoscapecore_testnet.wasm daoscapecore_testnet.abi
 else
-    echo "argument error - first argument is the contract name"
+    echo "error - first argument is the contract name"
 fi
 
