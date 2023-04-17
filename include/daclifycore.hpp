@@ -12,7 +12,7 @@
 using namespace std;
 using namespace eosio;
 
-const std::string version = "0.1.24";
+const std::string version = "0.1.24a";
 
 // contracts required for integration with Proton and Freeos
 #ifdef PRODUCTION

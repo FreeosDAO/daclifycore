@@ -4,24 +4,6 @@
     "types": [],
     "structs": [
         {
-            "name": "acontract",
-            "base": "",
-            "fields": [
-                {
-                    "name": "abi",
-                    "type": "bytes"
-                },
-                {
-                    "name": "code",
-                    "type": "bytes"
-                },
-                {
-                    "name": "approved",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "action",
             "base": "",
             "fields": [
@@ -650,20 +632,6 @@
             ]
         },
         {
-            "name": "proposal",
-            "base": "",
-            "fields": [
-                {
-                    "name": "proposal_name",
-                    "type": "name"
-                },
-                {
-                    "name": "packed_transaction",
-                    "type": "bytes"
-                }
-            ]
-        },
-        {
             "name": "proposals",
             "base": "",
             "fields": [
@@ -763,20 +731,6 @@
             "name": "repairconf",
             "base": "",
             "fields": []
-        },
-        {
-            "name": "setcontract",
-            "base": "",
-            "fields": [
-                {
-                    "name": "abi",
-                    "type": "bytes"
-                },
-                {
-                    "name": "code",
-                    "type": "bytes"
-                }
-            ]
         },
         {
             "name": "setuiframe",
@@ -1003,20 +957,6 @@
             ]
         },
         {
-            "name": "upgrade",
-            "base": "",
-            "fields": [
-                {
-                    "name": "proposer",
-                    "type": "name"
-                },
-                {
-                    "name": "proposal",
-                    "type": "name"
-                }
-            ]
-        },
-        {
             "name": "version",
             "base": "",
             "fields": []
@@ -1143,11 +1083,6 @@
             "ricardian_contract": ""
         },
         {
-            "name": "setcontract",
-            "type": "setcontract",
-            "ricardian_contract": ""
-        },
-        {
             "name": "setuiframe",
             "type": "setuiframe",
             "ricardian_contract": ""
@@ -1203,11 +1138,6 @@
             "ricardian_contract": ""
         },
         {
-            "name": "upgrade",
-            "type": "upgrade",
-            "ricardian_contract": ""
-        },
-        {
             "name": "version",
             "type": "version",
             "ricardian_contract": ""
@@ -1229,13 +1159,6 @@
         {
             "name": "balances",
             "type": "balances",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "contract",
-            "type": "acontract",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
@@ -1292,13 +1215,6 @@
         {
             "name": "profiledata",
             "type": "profiledata",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "proposal",
-            "type": "proposal",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
