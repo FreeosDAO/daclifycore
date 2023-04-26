@@ -597,7 +597,10 @@ bool daclifycore::is_proton_kyced(const name& account) {
   auto verification_iterator = verification_table.find(account.value);
 
   if (verification_iterator != verification_table.end()) {
-    
+
+    // New requirement, as of v0.1.25 - KYC'ed accounts must also be name verified
+    if (!verification_iterator->verified) return false;
+
     auto kyc_prov = verification_iterator->kyc;
 
     for (int i = 0; i < kyc_prov.size(); i++) {
